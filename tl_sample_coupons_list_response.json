@@ -1,0 +1,16 @@
+{
+  "coupons": [
+    {
+      "id": "CUP001",
+      "code": "SUMMER20",
+      "discount": "20%",
+      "description": "20% off summer collection"
+    },
+    {
+      "id": "CUP002",
+      "code": "WELCOME10",
+      "discount": "10%",
+      "description": "10% off first order"
+    }
+  ]
+}

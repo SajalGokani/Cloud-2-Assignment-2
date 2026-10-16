@@ -1,0 +1,64 @@
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "id",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "provider_id",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "campaign_id",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "coupons",
+        "KeySchema": [
+            {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+            }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": "2026-10-16T13:50:48.615000-06:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 25,
+            "WriteCapacityUnits": 10
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:us-east-1:000000000000:table/coupons",
+        "TableId": "c3ac8511-b878-4440-bf0a-9bc9261a054f",
+        "GlobalSecondaryIndexes": [
+            {
+                "IndexName": "provider-campaign-index",
+                "KeySchema": [
+                    {
+                        "AttributeName": "provider_id",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "campaign_id",
+                        "KeyType": "RANGE"
+                    }
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL"
+                },
+                "IndexStatus": "ACTIVE",
+                "ProvisionedThroughput": {
+                    "NumberOfDecreasesToday": 0,
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                },
+                "IndexSizeBytes": 0,
+                "ItemCount": 0,
+                "IndexArn": "arn:aws:dynamodb:us-east-1:000000000000:table/coupons/index/provider-campaign-index"
+            }
+        ],
+        "DeletionProtectionEnabled": false
+    }
+}

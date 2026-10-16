@@ -1,0 +1,71 @@
+===================================================================
+ASSESSMENT PART 2: COMMAND LOG
+===================================================================
+
+1. DYNAMODB TABLE CREATION & PROVISIONING
+-------------------------------------------------------------------
+awslocal dynamodb create-table \
+  --table-name coupons \
+  --attribute-definitions \
+      AttributeName=id,AttributeType=S \
+      AttributeName=provider_id,AttributeType=S \
+      AttributeName=campaign_id,AttributeType=S \
+  --key-schema \
+      AttributeName=id,KeyType=HASH \
+  --provisioned-throughput ReadCapacityUnits=25,WriteCapacityUnits=10 \
+  --global-secondary-indexes \
+      "[
+        {
+          \"IndexName\": \"provider-campaign-index\",
+          \"KeySchema\": [
+            {\"AttributeName\":\"provider_id\",\"KeyType\":\"HASH\"},
+            {\"AttributeName\":\"campaign_id\",\"KeyType\":\"RANGE\"}
+          ],
+          \"Projection\": {\"ProjectionType\":\"ALL\"},
+          \"ProvisionedThroughput\": {\"ReadCapacityUnits\": 5, \"WriteCapacityUnits\": 5}
+        }
+      ]"
+
+2. POPULATE SAMPLE DATA
+-------------------------------------------------------------------
+awslocal dynamodb put-item \
+  --table-name coupons \
+  --item '{
+    "id": {"S": "CUP001"},
+    "code": {"S": "SUMMER20"},
+    "discount": {"S": "20%"},
+    "description": {"S": "20% off summer collection"},
+    "provider_id": {"S": "PROV100"},
+    "campaign_id": {"S": "CAMP2026"}
+  }'
+
+awslocal dynamodb put-item \
+  --table-name coupons \
+  --item '{
+    "id": {"S": "CUP002"},
+    "code": {"S": "WELCOME10"},
+    "discount": {"S": "10%"},
+    "description": {"S": "10% off first order"},
+    "provider_id": {"S": "PROV101"},
+    "campaign_id": {"S": "CAMP2026"}
+  }'
+
+3. DEPLOY & TEST LAMBDA FUNCTIONS
+-------------------------------------------------------------------
+./tl_provision_coupons_get_by_id_lambda.sh
+./tl_provision_coupons_update_lambda.sh
+
+4. API ENDPOINT VERIFICATION (CURL)
+-------------------------------------------------------------------
+API_ID=$(cat api_id.txt)
+
+# Test GET list
+curl -X GET "http://localhost:4566/restapis/${API_ID}/prod/_user_request_/coupons_poc"
+
+# Test GET by ID
+curl -X GET "http://localhost:4566/restapis/${API_ID}/prod/_user_request_/coupons_poc/CUP001"
+
+# Test PUT update
+curl -X PUT "http://localhost:4566/restapis/${API_ID}/prod/_user_request_/coupons_poc/CUP001" \
+  -H "Content-Type: application/json" \
+  -d '{"discount": "25%", "description": "Updated 25% off summer collection"}'
